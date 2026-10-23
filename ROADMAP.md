@@ -1,5 +1,7 @@
 # Implementation plan — 0.1.0
 
+[← Back to repository README / Назад к README библиотеки](README.md)
+
 Continuous browser ↔ Java ↔ S3 streaming is implemented and locally verified. Checked items below are backed by [verification evidence](docs/VERIFICATION.md); publishing and additional provider/proxy gates remain open.
 
 ## Contracts and implementation
@@ -50,3 +52,5 @@ Continuous browser ↔ Java ↔ S3 streaming is implemented and locally verified
 - [ ] Integrate released artifacts into an application through its normal review workflow.
 
 No exactly-once guarantee, universal browser support, AWS/MinIO certification or general throughput benchmark is claimed.
+
+[← Back to repository README / Назад к README библиотеки](README.md)

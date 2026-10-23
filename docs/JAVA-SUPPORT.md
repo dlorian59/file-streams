@@ -1,5 +1,7 @@
 # Java support — 0.1.0
 
+[← Back to documentation and versions / Назад к документации и версиям](index.md)
+
 [English guide](0.1.0/en.md) · [Русское руководство](0.1.0/ru.md)
 
 | Runtime | Library features used | Compilation target |
@@ -14,3 +16,5 @@ Runtime support does not imply that the library uses every feature introduced by
 ## По-русски
 
 Минимальная версия — Java 17. Records описывают результат, ограничения и диапазон; pattern matching упрощает разбор ошибок. На Java 21, 25 и 27 используется тот же API и байткод Java 17. Виртуальные потоки, ScopedValue и preview API библиотеке не требуются: передача выполняется асинхронно через Reactor и Netty. Поддержка JVM не означает внедрение всех её новых возможностей. Результаты фактических запусков приведены в отчёте проверки.
+
+[← Back to documentation and versions / Назад к документации и версиям](index.md)

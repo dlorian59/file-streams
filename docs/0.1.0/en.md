@@ -1,6 +1,8 @@
 # s3-file-streams 0.1.0 — guide
 
-[EN](en.md) · [RU](ru.md) · [Versions](../README.md) · [Java 17 / 21 / 25 / 27](../JAVA-SUPPORT.md)
+[← Back to documentation and versions / Назад к документации и версиям](../index.md)
+
+[EN](en.md) · [RU](ru.md) · [Versions](../index.md) · [Java 17 / 21 / 25 / 27](../JAVA-SUPPORT.md)
 
 ## Capabilities
 
@@ -178,3 +180,5 @@ S3_TEST_ENDPOINT=http://127.0.0.1:19390 S3_MEMORY_BYTES=2147483649 \
 ```
 
 Run storage tests only against a disposable fixture. A 502 or lost response is not proof that an object is absent. A BUSY error means the bounded admission slots are occupied; reduce concurrency or close abandoned downloads. A package mix of Netty 4.1 and 4.2 can fail at runtime; retain the exported BOM and verify the final dependency graph. Incomplete multipart cleanup requires storage permissions and lifecycle support. [Measured evidence](../VERIFICATION.md) separates actual runs, compatibility assumptions and untested deployments.
+
+[← Back to documentation and versions / Назад к документации и версиям](../index.md)

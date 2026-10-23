@@ -1,6 +1,8 @@
 # HTTP contract — 0.1.0
 
-[Guides EN / RU](README.md)
+[← Back to documentation and versions / Назад к документации и версиям](index.md)
+
+[Guides EN / RU](index.md)
 
 ## Upload
 
@@ -47,3 +49,5 @@ Once response bytes have been sent, failures terminate the stream; a new JSON er
 ## Browser and proxy requirements
 
 CORS must allow PUT/GET/OPTIONS and Content-Type, X-Upload-Length, Range. Expose ETag, Content-Length, Content-Range, Accept-Ranges and Content-Encoding. Use an explicit application origin. Browser request streaming typically requires HTTP/2 or HTTP/3 with TLS and `duplex: 'half'`; full duplex response consumption is not promised. Disable request/response buffering and automatic compression on intermediary proxies, and test the actual deployed route. Only the direct local HTTP/2 route is verified here; no reverse proxy is certified.
+
+[← Back to documentation and versions / Назад к документации и версиям](index.md)

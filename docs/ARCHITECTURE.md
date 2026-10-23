@@ -1,5 +1,7 @@
 # Architecture and failure boundaries
 
+[← Back to documentation and versions / Назад к документации и версиям](index.md)
+
 The project solves continuous object transfer with explicit resource ownership. It does not implement application permissions, upload reservations, database transactions, event delivery, virus scanning or distributed commit.
 
 ## Boundaries
@@ -37,3 +39,5 @@ Backpressure limits what this library requests; it cannot repair an upstream Pub
 We retained the stock engine after real Garage boundary, source-failure, abort, digest and small-heap tests. No custom multipart state machine is introduced. Important observed configuration details are explicit multipartEnabled(true), two-part buffer capacity for unknown lengths, and full-range GET to preserve one download response. [Measurements and method](VERIFICATION.md).
 
 Sources: [AWS async multipart](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/s3-async-client-multipart.html), [multipart buffer and concurrency configuration](https://docs.aws.amazon.com/java/api/latest/software/amazon/awssdk/services/s3/multipart/MultipartConfiguration.Builder.html), [Garage compression configuration](https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#compression_level).
+
+[← Back to documentation and versions / Назад к документации и версиям](index.md)

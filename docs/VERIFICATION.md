@@ -1,5 +1,7 @@
 # Verification — 0.1.0
 
+[← Back to documentation and versions / Назад к документации и версиям](index.md)
+
 Executed locally on 24 October 2026 (Asia/Yekaterinburg). This records functional checks and sampled process memory, not a statistical benchmark or certification of other providers.
 
 ## Environment and dependencies
@@ -50,3 +52,5 @@ The browser module separately passed 27 Node unit tests and an npm-pack consumer
 Java sources/Javadoc/MIT artifacts build and publish to an isolated local Maven repository. An independent Gradle consumer resolves only those packaged modules and runs without source-project dependencies. CI repeats the Java matrix with an isolated Garage fixture and browser unit/package checks; local success does not itself mean a GitHub Actions run has completed.
 
 Remaining validation: real AWS S3 and MinIO, production reverse-proxy buffering and timeout settings, browser memory profiling under sustained slow sinks, multi-transfer memory capacity planning, complete-multipart response loss / permission-denied abort fault injection, release signing/provenance and registry publication. There is no universal browser claim or exactly-once claim.
+
+[← Back to documentation and versions / Назад к документации и версиям](index.md)
