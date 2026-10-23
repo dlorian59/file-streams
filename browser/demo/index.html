@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>s3-file-streams browser demo</title>
+<style>
+  body { max-width: 850px; margin: 3rem auto; padding: 0 1rem; font: 16px/1.5 system-ui; color: #172033; background: #f7f9fc; }
+  h1 { font-size: 1.7rem; } label { display: block; margin-top: 1rem; } input { padding: .6rem; width: 100%; box-sizing: border-box; }
+  button { padding: .65rem 1rem; margin: 1rem .5rem 0 0; cursor: pointer; } pre { padding: 1rem; background: #e9eef7; white-space: pre-wrap; overflow-wrap: anywhere; }
+</style>
+<h1>Continuous file streams</h1>
+<p>One raw upload stream, one download sink. The bundled server is a small protocol fixture, not S3. To exercise the Java adapter, point the object URL below at its HTTP/2 TLS endpoint and configure its CORS policy.</p>
+<label>Object endpoint base URL <input id="base" aria-label="Object endpoint base URL"></label>
+<label>Object key <input id="key" value="browser-demo.bin"></label>
+<label>File <input id="file" type="file"></label>
+<button id="upload">Upload stream</button><button id="download">Download to file</button><button id="abort">Cancel active transfer</button>
+<pre id="status" role="status">Choose a file. Read progress is not proof of network delivery or S3 commit.</pre>
+<h2>Browser transport checks</h2>
+<p>These use the local fixture. A separate request checks that bytes reached its HTTP/2 server before the upload source closed. Passing these checks does not prove S3 durability or proxy behavior in another deployment.</p>
+<button id="checks">Run browser checks</button>
+<pre id="results" aria-live="polite">Not run.</pre>
+<h2>Java adapter integration checks</h2>
+<p>Requires the repository's Java TLS demo with a disposable S3 backend and CORS allowing this origin. These checks create several uniquely named test objects. The cancelled object still needs backend cleanup verification. The endpoint field above is used; set it to the Java demo endpoint first.</p>
+<button id="java-checks">Run Java adapter checks</button>
+<pre id="java-results" aria-live="polite">Not run.</pre>
+<script type="module" src="/demo/app.js"></script>
+</html>

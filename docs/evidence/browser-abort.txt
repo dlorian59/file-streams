@@ -1,0 +1,7 @@
+Browser: Headless Chromium 156, direct HTTP/2 TLS → Java 17 WebFlux → Garage 2.4.1
+Key: browser-java-1792789849035-abort
+Browser source bytes read before abort: 6291456
+Backend subsequent ListMultipartUploads(prefix=key): 0
+Backend subsequent HeadObject(key): 404
+Known/unknown/empty fixture objects deleted after verification.
+This observed pre-commit cancellation does not guarantee rollback when cancellation races with commit.

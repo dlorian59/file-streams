@@ -1,0 +1,1 @@
+MEMORY_PROBE bytes=2147483649 maxHeap=100663296 sampledHeap=88465920 sampledDirect=1298440 sampledRss=259825664 sourceMaxRequest=1 seconds=12.900

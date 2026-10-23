@@ -1,0 +1,43 @@
+{
+  "name": "@59alex/s3-file-streams",
+  "version": "0.1.0",
+  "description": "Continuous browser upload and download streams with explicit commit validation",
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "README.ru.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test test/*.test.mjs",
+    "prepack": "npm run build",
+    "demo": "npm run build && node scripts/browser-fixture.mjs",
+    "test:package": "node scripts/consumer-smoke.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/59Alex/s3-file-streams.git",
+    "directory": "browser"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "typescript": "7.0.2"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "base": "https://127.0.0.1:19443/objects",
+  "passed": 7,
+  "results": [
+    {
+      "name": "known upload and SHA-256 download round trip",
+      "ok": true,
+      "detail": {
+        "key": "browser-java-1792789849035-known",
+        "bytes": 6291473,
+        "sha256": "42605fdf2a3ccb9feb9e3d796cd26565da4ea4321df8ce418691c5e256d84e3d",
+        "etag": "\"92b112623ab450a652f2e7b1601461c2-2\""
+      }
+    },
+    {
+      "name": "unknown upload and SHA-256 download round trip",
+      "ok": true,
+      "detail": {
+        "key": "browser-java-1792789849035-unknown",
+        "bytes": 1048589,
+        "sha256": "a1ba713493c2d1502c48e23b3195f02e1d63b1b6c9176e885ce70bf73e28d7ec",
+        "etag": "\"1d9794f89711f5e75f3dd144cbd06190\""
+      }
+    },
+    {
+      "name": "empty upload and SHA-256 download round trip",
+      "ok": true,
+      "detail": {
+        "key": "browser-java-1792789849035-empty",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "etag": "\"d41d8cd98f00b204e9800998ecf8427e\""
+      }
+    },
+    {
+      "name": "range across internal 5 MiB boundary",
+      "ok": true,
+      "detail": {
+        "start": 5242869,
+        "end": 5242921,
+        "total": 6291473
+      }
+    },
+    {
+      "name": "suffix range",
+      "ok": true,
+      "detail": {
+        "start": 6291442,
+        "end": 6291472,
+        "total": 6291473
+      }
+    },
+    {
+      "name": "missing object never reaches the destination",
+      "ok": true,
+      "detail": {
+        "writes": 0
+      }
+    },
+    {
+      "name": "abort after 6 MiB source read cancels source; commit remains unknown",
+      "ok": true,
+      "detail": {
+        "key": "browser-java-1792789849035-abort",
+        "bytesRead": 6291456,
+        "cancelled": true,
+        "outcome": "unknown",
+        "backendCleanupRequiresServerVerification": true
+      }
+    }
+  ]
+}
