@@ -14,24 +14,27 @@ WritableStream ← HTTP response  ← WebFlux ← Reactor ← AWS SDK ← S3
 
 | Module | What it provides |
 | --- | --- |
-| `s3-file-streams` | One-shot byte streams, checked lengths and size limits, long counters, single ranges, explicit resource ownership |
-| `s3-file-streams-s3` | Stock AWS async multipart with a 10 MiB SDK buffer setting, one in-flight part, bounded transfer admission and cancellation cleanup |
-| `s3-file-streams-webflux` | Raw-body PUT, streamed GET, declared-size checks, pooled DataBuffer release and commit-aware errors |
+| [`s3-file-streams`](docs/0.1.0/en.md#3-upload-unknown-or-known-length) | One-shot byte streams, checked lengths and size limits, long counters, single ranges, explicit resource ownership |
+| [`s3-file-streams-s3`](docs/0.1.0/en.md#2-create-the-application-owned-storage-client) | Stock AWS async multipart with a 10 MiB SDK buffer setting, one in-flight part, bounded transfer admission and cancellation cleanup |
+| [`s3-file-streams-webflux`](docs/0.1.0/en.md#7-webflux-raw-body-adapter) | Raw-body PUT, streamed GET, declared-size checks, pooled DataBuffer release and commit-aware errors |
 | [`@59alex/s3-file-streams`](browser/README.md) | Browser ReadableStream / WritableStream, AbortSignal, progress and strict response validation |
 
 Java 17 is the minimum; Java 21, 25 and 27 run the same API. [Features used by runtime](docs/JAVA-SUPPORT.md). A React adapter is outside this version.
 
 ## Build and use
 
+Requires JDK 17+ and Node.js 20+. These checks need no running S3 service. The consumer prints `Published-artifact consumer passed: core + S3 + WebFlux`.
+
 ```bash
-./gradlew build publishToMavenLocal
+./gradlew build publishToMavenLocal -Dmaven.repo.local="$PWD/build/local-repository"
+./gradlew -p examples/consumer run
 cd browser
 npm ci
 npm test
 npm run test:package
 ```
 
-Java coordinates are `io.github.59alex:s3-file-streams[-s3|-webflux]:0.1.0`. Build to Maven Local before resolving them; registry publication is a separate [release gate](ROADMAP.md). The [versioned guide](docs/0.1.0/en.md) shows dependencies and a code example for each capability. The [independent consumer](examples/consumer) verifies packaged artifacts rather than source-project dependencies.
+Java coordinates are `io.github.59alex:s3-file-streams[-s3|-webflux]:0.1.0`. The command above publishes to an isolated local repository for the example consumer. Use `./gradlew publishToMavenLocal` to install into your regular Maven Local repository; registry publication is a separate [release gate](ROADMAP.md). The [versioned guide](docs/0.1.0/en.md) shows dependencies and a code example for each capability. The [independent consumer](examples/consumer) verifies packaged artifacts rather than source-project dependencies.
 
 ## What is verified
 
@@ -41,7 +44,7 @@ The browser requires an actually working request-stream transport, usually HTTP/
 
 ## Demo and boundaries
 
-[Run the isolated HTTP/2 demo](docs/0.1.0/en.md#local-end-to-end-demo). It has no authentication and binds to loopback. Production applications supply authorization, keys, CORS, storage policy and proxy configuration.
+Docker and OpenSSL are required for the complete demo. [Run the isolated HTTP/2 demo](docs/0.1.0/en.md#local-end-to-end-demo). It has no authentication and binds to loopback. Production applications supply authorization, keys, CORS, storage policy and proxy configuration.
 
 Cancellation before EOF signals a source error so the SDK can abort an incomplete multipart upload. Cancellation during finalization may race with a successful commit; a lost acknowledgement means an unknown outcome. Streams are not automatically retried. ETags are opaque identifiers, not checksums. [HTTP contract](docs/HTTP-CONTRACT.md) · [Architecture](docs/ARCHITECTURE.md).
 
@@ -58,30 +61,33 @@ Cancellation before EOF signals a source error so the SDK can abort an incomplet
 
 | Модуль | Возможности |
 | --- | --- |
-| `s3-file-streams` | Одноразовые потоки, проверка размера, счётчики long, одиночные byte ranges и управление ресурсами |
-| `s3-file-streams-s3` | AWS async SDK: настройка буфера 10 MiB, одна часть в полёте, ограничение числа передач и очистка при отмене |
-| `s3-file-streams-webflux` | PUT с сырым телом, потоковый GET, освобождение DataBuffer, проверка длины и ошибки с состоянием commit |
+| [`s3-file-streams`](docs/0.1.0/ru.md#3-загрузка-с-неизвестной-или-известной-длиной) | Одноразовые потоки, проверка размера, счётчики long, одиночные byte ranges и управление ресурсами |
+| [`s3-file-streams-s3`](docs/0.1.0/ru.md#2-клиент-и-ограничения) | AWS async SDK: настройка буфера 10 MiB, одна часть в полёте, ограничение числа передач и очистка при отмене |
+| [`s3-file-streams-webflux`](docs/0.1.0/ru.md#7-webflux) | PUT с сырым телом, потоковый GET, освобождение DataBuffer, проверка длины и ошибки с состоянием commit |
 | [`@59alex/s3-file-streams`](browser/README.md) | ReadableStream / WritableStream, AbortSignal, прогресс и проверка ответа сервера |
 
 Минимум Java 17. На Java 21, 25 и 27 работает тот же API; [какие возможности языка используются](docs/JAVA-SUPPORT.md). React-адаптер в эту версию не входит.
 
 ## Запуск
 
+Нужны JDK 17+ и Node.js 20+. Для этих проверок S3 не требуется. Consumer выводит `Published-artifact consumer passed: core + S3 + WebFlux`.
+
 ```bash
-./gradlew build publishToMavenLocal
+./gradlew build publishToMavenLocal -Dmaven.repo.local="$PWD/build/local-repository"
+./gradlew -p examples/consumer run
 cd browser
 npm ci
 npm test
 npm run test:package
 ```
 
-Координаты Java: `io.github.59alex:s3-file-streams[-s3|-webflux]:0.1.0`. Сначала соберите артефакты в Maven Local; публикация в реестры — отдельный [этап выпуска](ROADMAP.md). В [руководстве](docs/0.1.0/ru.md) каждая возможность сопровождается примером.
+Координаты Java: `io.github.59alex:s3-file-streams[-s3|-webflux]:0.1.0`. Команда выше публикует артефакты в отдельный локальный каталог для примера consumer. Для установки в обычный Maven Local выполните `./gradlew publishToMavenLocal`; публикация в реестры — отдельный [этап выпуска](ROADMAP.md). В [руководстве](docs/0.1.0/ru.md) каждая возможность сопровождается примером.
 
 На Garage 2.4.1 проверены пустой и неизвестный размер, границы внутренних частей 5 MiB, диапазоны, отмена и ошибки. Реальный объект 2 GiB + 1 байт прошёл загрузку и скачивание с совпадающим SHA-256 при heap 96 MiB. Повторяющиеся тестовые данные сжимались самим Garage; это проверка корректности и ресурсов, а не универсальный бенчмарк. [Измерения и ограничения](docs/VERIFICATION.md).
 
 Для браузерной загрузки нужен реально работающий транспорт request streams, обычно HTTP/2 с TLS. Проверка конструктора Request не доказывает поддержку прокси или сети. Скрытого накопления файла в Blob нет.
 
-[Демонстрация](docs/0.1.0/ru.md#локальная-демонстрация) работает на loopback без авторизации. Приложение отвечает за доступ, ключи объектов, CORS, настройки S3 и прокси. Отмена при финализации может пересечься с успешным сохранением; потерянный ответ означает неизвестный результат. Автоповтора одноразового потока нет. ETag — непрозрачный идентификатор, не контрольная сумма.
+Для полной демонстрации нужны Docker и OpenSSL. [Демонстрация](docs/0.1.0/ru.md#локальная-демонстрация) работает на loopback без авторизации. Приложение отвечает за доступ, ключи объектов, CORS, настройки S3 и прокси. Отмена при финализации может пересечься с успешным сохранением; потерянный ответ означает неизвестный результат. Автоповтора одноразового потока нет. ETag — непрозрачный идентификатор, не контрольная сумма.
 
 [MIT](LICENSE) · 2026 Aleksandr Kashevarov.
 

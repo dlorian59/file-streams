@@ -14,6 +14,8 @@
 - WebFlux pooled-buffer ownership, HTTP errors and header validation.
 - Browser upload/download streams, abort and capability checks.
 
+Examples: [1. Install modules locally](#1-install-modules-locally) · [2. Create the application-owned storage client](#2-create-the-application-owned-storage-client) · [3. Upload unknown or known length](#3-upload-unknown-or-known-length) · [4. Cancellation, deadlines and outcomes](#4-cancellation-deadlines-and-outcomes) · [5. Download and close](#5-download-and-close) · [6. Single byte ranges](#6-single-byte-ranges) · [7. WebFlux raw-body adapter](#7-webflux-raw-body-adapter) · [8. Browser streams](#8-browser-streams) · [Local end-to-end demo](#local-end-to-end-demo) · [9. Verification and troubleshooting](#9-verification-and-troubleshooting)
+
 ## 1. Install modules locally
 
 ```bash
@@ -105,6 +107,8 @@ Long bytes = Mono.usingWhen(files.download("example.bin", null),
 ```
 
 The example counts incrementally without aggregating the object. Replace the count with a nonblocking sink that honors demand. An opened download must be consumed or closed; it holds an admission permit. usingWhen covers asynchronous resource cleanup. Do not block an event-loop thread with a filesystem OutputStream.
+
+Closing an active download cancels its source and terminates its reader with `StreamFailure.Code.CANCELLED`. The byte count is checked against the announced length: truncated and oversized bodies fail, and the admission permit is released once.
 
 ## 6. Single byte ranges
 

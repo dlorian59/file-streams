@@ -1,5 +1,5 @@
 io.github.alex59.filestreams.s3.GarageIntegrationTest: tests=7 failures=0 errors=0 skipped=0
 io.github.alex59.filestreams.s3.MemoryProbeTest: tests=1 failures=0 errors=0 skipped=1
-io.github.alex59.filestreams.s3.S3ContractTest: tests=3 failures=0 errors=0 skipped=0
-io.github.alex59.filestreams.CoreTest: tests=7 failures=0 errors=0 skipped=0
+io.github.alex59.filestreams.s3.S3ContractTest: tests=5 failures=0 errors=0 skipped=0
+io.github.alex59.filestreams.CoreTest: tests=9 failures=0 errors=0 skipped=0
 io.github.alex59.filestreams.webflux.HttpHandlerTest: tests=6 failures=0 errors=0 skipped=0

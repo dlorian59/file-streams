@@ -24,7 +24,7 @@
 Error shape:
 
 ```json
-{"committed":false,"code":"LENGTH_MISMATCH","message":"Upload is shorter than declared"}
+{"committed":false,"code":"LENGTH_MISMATCH","message":"Byte stream is shorter than declared"}
 ```
 
 | Status / code | Meaning |

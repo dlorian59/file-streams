@@ -14,14 +14,16 @@ Storage: isolated single-node Garage 2.4.1, official image digest `sha256:9c96ca
 
 | Runtime | Tests passed | Separately opt-in memory test | Evidence |
 | --- | ---: | --- | --- |
-| 17 | 23 | excluded from ordinary build | [Report](evidence/java17.txt) |
-| 21 | 23 | excluded from ordinary build | [Report](evidence/java21.txt) |
-| 25 | 23 | excluded from ordinary build | [Report](evidence/java25.txt) |
-| 27 | 23 | excluded from ordinary build | [Report](evidence/java27.txt) |
+| 17 | 27 | excluded from ordinary build | [Report](evidence/java17.txt) |
+| 21 | 27 | excluded from ordinary build | [Report](evidence/java21.txt) |
+| 25 | 27 | excluded from ordinary build | [Report](evidence/java25.txt) |
+| 27 | 27 | excluded from ordinary build | [Report](evidence/java27.txt) |
 
-Seven core tests check demand, buffer position, long counters above 2 GiB, bounds/length, one-shot reuse, active cancellation, ranges and download cleanup. Ten S3 tests cover seven actual Garage scenarios plus three contract tests; six WebFlux tests cover pooled memory release, invalid metadata, length/buffer failures, range headers and unknown storage outcomes.
+Nine core tests check demand, buffer position, long counters above 2 GiB, bounds/length, one-shot reuse, active cancellation, ranges and download cleanup. Twelve S3 tests cover seven actual Garage scenarios plus five contract tests; six WebFlux tests cover pooled memory release, invalid metadata, length/buffer failures, range headers and unknown storage outcomes.
 
 Storage scenarios include 0, 1, 65,537 bytes; 5 MiB minus one, exactly 5 MiB, plus one; and 12 MiB. Source failure and cancellation observe no remaining matching multipart uploads and HEAD 404. A storage failure releases admission. Download cancellation and closing an unread body release admission. A malformed acknowledgement terminates with an error instead of hanging the sink. A custom client that never consumes the source cannot report a successful UploadResult.
+
+The follow-up resource audit adds four regressions: unfinished upload sources are cancelled on SDK failure; malformed GET metadata cancels the response and releases admission; closing an active download terminates the reader instead of leaving it waiting; truncated and oversized download bodies fail validation and release their permit. The existing byte-stream validator is shared by upload and download. The Java matrix, packaged Maven consumer and 27 browser unit tests plus npm-pack consumer were rerun after these changes. All 109 local Markdown links and anchors resolved; guides are repository Markdown, with no guidance website or Pages workflow.
 
 ## Memory and large object method
 
@@ -29,13 +31,13 @@ The opt-in MemoryProbeTest generates 64 KiB buffers on demand; byte at offset n 
 
 Garage uses its default Zstd compression level 1 and content-addressed blocks. This highly repeating payload compresses and deduplicates strongly: after the earlier 256 MiB / 64 MiB / 2 GiB checks, the entire fixture occupied approximately 12 MiB on disk. Every logical byte still traversed the Java upload and download and participated in both digests. These times do not represent incompressible payloads, remote network latency, production disk throughput or browser heap usage.
 
-Final aligned-dependency measurements are in the raw text files below. Values are sampled used memory of the whole test JVM, not a proof of retained live-set size and not a per-transfer RSS guarantee.
+Aligned-dependency measurements are in the raw text files below. The 2 GiB + 1 byte and slow-sink cases were rerun after the resource audit; the 256 MiB case records the earlier implementation check. Values are sampled used memory of the whole test JVM, not a proof of retained live-set size and not a per-transfer RSS guarantee.
 
 | Workload | Sampled heap / direct / RSS (MiB) | Time, single run | Raw result |
 | --- | --- | --- | --- |
 | 256 MiB | 76.99 / 1.24 / 230.89 | 4.169 s | [Result](evidence/memory-268435456.txt) |
-| **2 GiB + 1 byte**, real SHA-256 round trip | 84.37 / 1.24 / 247.79 | 12.900 s | [Result](evidence/memory-2147483649.txt) |
-| 64 MiB, slow sink: 1 ms per emitted buffer, prefetch 1 | 58.10 / 1.11 / 198.96 | 11.641 s | [Result](evidence/memory-67108864.txt) |
+| **2 GiB + 1 byte**, real SHA-256 round trip | 50.33 / 0.04 / 240.89 | 15.649 s | [Result](evidence/memory-2147483649.txt) |
+| 64 MiB, slow sink: 1 ms per emitted buffer, prefetch 1 | 44.31 / 0.04 / 216.00 | 11.688 s | [Result](evidence/memory-67108864.txt) |
 
 The core also has a separate counter-only test above 2 GiB; that test is not substituted for the real storage result. No custom multipart implementation is benchmarked: the selected implementation is the stock AWS engine, evaluated before and after integration.
 
