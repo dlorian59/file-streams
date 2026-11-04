@@ -10,4 +10,6 @@ Choose a library version and language. Documentation is plain Markdown and stays
 
 [HTTP contract](HTTP-CONTRACT.md) · [Architecture and failure boundaries](ARCHITECTURE.md) · [Measured evidence](VERIFICATION.md) · [Browser API](../browser/README.md)
 
+[Complete reference EN](0.1.0/reference-en.md) · [Полный справочник RU](0.1.0/reference-ru.md)
+
 [← Back to repository README / Назад к README библиотеки](../README.md)

@@ -8,6 +8,7 @@ import reactor.core.publisher.Flux;
 // RU: Используем локальные Maven-артефакты без зависимостей на исходный проект и credentials хранилища.
 public final class Consumer {
     public static void main(String[] args) {
+        CoreCapabilities.run();
         var stream=new CheckedStream(Flux.just(ByteBuffer.wrap(new byte[]{1,2,3})),OptionalLong.of(3),StreamLimits.defaults());
         stream.content().then().block();
         if(stream.bytes()!=3 || !stream.completed()) throw new AssertionError("stream validation failed");

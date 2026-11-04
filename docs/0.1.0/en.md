@@ -4,6 +4,8 @@
 
 [EN](en.md) · [RU](ru.md) · [Versions](../index.md) · [Java 17 / 21 / 25 / 27](../JAVA-SUPPORT.md)
 
+[Complete API, options, errors and troubleshooting](reference-en.md)
+
 ## Capabilities
 
 - Continuous raw uploads: known or unknown total length; no application part API.

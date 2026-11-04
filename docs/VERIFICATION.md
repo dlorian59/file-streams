@@ -4,6 +4,10 @@
 
 Executed locally on 24 October 2026 (Asia/Yekaterinburg). This records functional checks and sampled process memory, not a statistical benchmark or certification of other providers.
 
+## Documentation and examples audit — 5 November 2026
+
+Added complete EN/RU references covering the Java public API, browser options/exports/errors, HTTP statuses, fixed S3 profile, resource lifetime and troubleshooting. The new core example ran against packaged local Maven artifacts; the expanded Java transfer examples and TypeScript capability/options examples compiled. Production transfer code did not change, so no storage/memory/matrix rerun was performed. Reference navigation and all local Markdown targets/assets were checked. The upload-only scope of server StreamLimits and the unknown-length HTTP-abort observation remain explicit.
+
 ## Follow-up integration check — 4 November 2026
 
 The project and active Maven/npm coordinates were renamed to `file-streams`; Java packages and streaming algorithms were preserved. Historical measurements below and their raw evidence remain the 24 October results. After the rename: Java build, the 20 non-storage tests, packaged Maven consumer, 27 browser tests, annotated TypeScript compilation and npm-pack consumer passed. The seven Garage tests and opt-in memory test were not rerun: Docker could not start the fixture because a parent snapshot was missing.

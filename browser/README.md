@@ -36,6 +36,8 @@ import { uploadStream, downloadTo, objectUrl, streamCapabilities, TransferError 
 
 The package exports ES modules and TypeScript declarations. Include the DOM library in the consumer's TypeScript configuration. Node is used for tests/tooling; a Node fetch implementation is not evidence of browser transport compatibility.
 
+[Complete Java/TypeScript API reference](https://github.com/59Alex/file-streams/blob/main/docs/0.1.0/reference-en.md) includes every option, error code, HTTP status and a paired Java/TS capability map.
+
 ## Capabilities at a glance
 
 | Capability | Contract |
@@ -296,6 +298,8 @@ import { uploadStream, downloadTo, objectUrl, streamCapabilities, TransferError 
 | Отмена | AbortSignal отменяет fetch и принадлежащие операции потоки. Уже случившийся удалённый commit или запись в sink не откатываются автоматически. |
 | Ограничения | Обязательный maxBytes, необязательный knownLength, безопасные целые счётчики, максимум 16 КиБ JSON-метаданных. |
 | Прогресс | Отдельно чтение исходного потока и подтверждённый commit. При скачивании — байты, принятые завершившимися записями sink. |
+
+[Полный справочник Java/TypeScript API](https://github.com/59Alex/file-streams/blob/main/docs/0.1.0/reference-ru.md) перечисляет все параметры, коды ошибок, HTTP-статусы и парные примеры Java/TS.
 
 ## 1. Проверить браузер и реальный HTTP-путь
 

@@ -3,7 +3,7 @@
 <details name="readme-language">
 <summary><picture><source media="(prefers-color-scheme: dark)" srcset="assets/lang-en-dark.svg"><img src="assets/lang-en-light.svg" width="42" height="26" alt="EN"></picture></summary>
 
-[Version 0.1.0 guide](docs/0.1.0/en.md) · [All versions](docs/index.md)
+[Version 0.1.0 guide](docs/0.1.0/en.md) · [All versions](docs/index.md) · [Complete reference](docs/0.1.0/reference-en.md)
 
 Continuous browser ↔ Java ↔ S3 file transfer. Applications provide one stream; the S3 adapter manages bounded internal multipart requests. Upload progress and confirmed storage commit are different states.
 
@@ -19,7 +19,7 @@ WritableStream ← HTTP response  ← WebFlux ← Reactor ← AWS SDK ← S3
 | [`file-streams-webflux`](docs/0.1.0/en.md#7-webflux-raw-body-adapter) | Raw-body PUT, streamed GET, declared-size checks, pooled DataBuffer release and commit-aware errors |
 | [`@59alex/file-streams`](browser/README.md) | Browser ReadableStream / WritableStream, AbortSignal, progress and strict response validation |
 
-Java 17 is the minimum; Java 21, 25 and 27 run the same API. [Features used by runtime](docs/JAVA-SUPPORT.md). A React adapter is outside this version.
+Java 17 is the minimum; Java 21, 25 and 27 run the same API. [Features used by runtime](docs/JAVA-SUPPORT.md). React integration is maintained as a separate companion package.
 
 ## Build and use
 
@@ -76,7 +76,7 @@ Cancelling the local Java subscription before EOF signals a source error so the 
 <details name="readme-language" open>
 <summary><picture><source media="(prefers-color-scheme: dark)" srcset="assets/lang-ru-dark.svg"><img src="assets/lang-ru-light.svg" width="42" height="26" alt="RU"></picture></summary>
 
-[Руководство 0.1.0](docs/0.1.0/ru.md) · [Все версии](docs/index.md)
+[Руководство 0.1.0](docs/0.1.0/ru.md) · [Все версии](docs/index.md) · [Полный справочник](docs/0.1.0/reference-ru.md)
 
 Непрерывная передача файлов между браузером, Java-сервером и S3. Приложение передаёт один поток; адаптер сам выполняет внутренние multipart-запросы S3 с ограниченным буфером. Прочитанные байты и подтверждённое сохранение — разные состояния.
 
@@ -87,7 +87,7 @@ Cancelling the local Java subscription before EOF signals a source error so the 
 | [`file-streams-webflux`](docs/0.1.0/ru.md#7-webflux) | PUT с сырым телом, потоковый GET, освобождение DataBuffer, проверка длины и ошибки с состоянием commit |
 | [`@59alex/file-streams`](browser/README.md) | ReadableStream / WritableStream, AbortSignal, прогресс и проверка ответа сервера |
 
-Минимум Java 17. На Java 21, 25 и 27 работает тот же API; [какие возможности языка используются](docs/JAVA-SUPPORT.md). React-адаптер в эту версию не входит.
+Минимум Java 17. На Java 21, 25 и 27 работает тот же API; [какие возможности языка используются](docs/JAVA-SUPPORT.md). React-интеграция вынесена в отдельный companion-пакет.
 
 ## Браузер и Spring в одном потоке
 
