@@ -4,6 +4,12 @@
 
 Executed locally on 24 October 2026 (Asia/Yekaterinburg). This records functional checks and sampled process memory, not a statistical benchmark or certification of other providers.
 
+## Follow-up integration check — 4 November 2026
+
+The project and active Maven/npm coordinates were renamed to `file-streams`; Java packages and streaming algorithms were preserved. Historical measurements below and their raw evidence remain the 24 October results. After the rename: Java build, the 20 non-storage tests, packaged Maven consumer, 27 browser tests, annotated TypeScript compilation and npm-pack consumer passed. The seven Garage tests and opt-in memory test were not rerun: Docker could not start the fixture because a parent snapshot was missing.
+
+The companion Boot 4.1.2 starter was exercised with real Chromium HTTP/2/TLS and an explicitly bounded in-memory test storage, not S3. A 45-byte upload/commit/download matched byte-for-byte. Cancellation with a declared 1 MiB source produced client `ABORTED`/unknown and a subsequent 404. In the unknown-length cancellation case, the client likewise reported `ABORTED`/unknown, but the fixture retained 8,192 bytes. The transport-level cause is not established. This observation does not certify or disprove S3 cleanup; it makes the distinction between local source cancellation, observed HTTP EOF, and remote outcome explicit. Known size should be sent when available; unknown outcome never promises rollback.
+
 ## Environment and dependencies
 
 Linux x86_64; Gradle 9.8.2; Java 17.0.21, 21.0.9, 25.0.1 and 27.0.1.0.2. All library classes target Java 17 (major 61), without preview features. Reactor 3.8.8, AWS SDK 2.57.3, Spring WebFlux 7.0.10, Reactor Netty 1.3.8, aligned Netty 4.2.19.Final, Jackson 3.2.4. The S3 module exports the Netty BOM: a mixed 4.1 codec / 4.2 codec-base graph failed the first combined demo and is not a supported configuration.

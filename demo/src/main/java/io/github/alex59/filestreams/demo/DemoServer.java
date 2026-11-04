@@ -20,8 +20,8 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * Local demo only: bind to loopback, no authentication. Never expose directly to untrusted
- * networks.
+ * EN: Local demo only: bind to loopback, no authentication; keep access restricted.
+ * RU: Локальная демонстрация без аутентификации: loopback, доступ должен быть ограничен.
  */
 public final class DemoServer {
     private DemoServer() {}

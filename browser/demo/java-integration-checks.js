@@ -1,5 +1,7 @@
-// Explicit integration run: requires the repository's Java TLS demo and a disposable S3 backend.
-// Bounded buffers below are test assertions, not the library's transfer implementation.
+// EN: Explicit integration run: requires the Java TLS demo and a disposable storage backend.
+// RU: Сквозной запуск требует Java TLS demo и отдельное тестовое хранилище.
+// EN: Bounded buffers below serve test assertions; the library itself transfers streams.
+// RU: Ограниченные буферы ниже нужны для проверок; сама библиотека передаёт потоки.
 import { uploadStream, downloadTo, objectUrl } from '/dist/index.js';
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const assert = (condition, message) => { if (!condition) throw new Error(message); };

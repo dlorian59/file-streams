@@ -22,7 +22,9 @@ admitted → consume / validate → source EOF → SDK finalization → confirme
             SDK abort path                 outcome unknown
 ```
 
-Cancellation before EOF first cancels the upstream source, then signals an error to the SDK. The SDK future is left alive so its multipart error path can issue AbortMultipartUpload. Cancelling that future prematurely can interrupt cleanup. Tests observe both ListMultipartUploads and HEAD after cancellation; a source-cancellation flag alone is insufficient evidence.
+Local Java subscription cancellation before EOF first cancels the upstream source, then signals an error to the SDK. The SDK future is left alive so its multipart error path can issue AbortMultipartUpload. Cancelling that future prematurely can interrupt cleanup. Tests observe both ListMultipartUploads and HEAD after cancellation; a source-cancellation flag alone is insufficient evidence.
+
+Local subscription cancellation and source errors are distinct from HTTP termination. If a transport presents termination as normal EOF for an unknown-length request, a backend can accept the received prefix; a browser abort therefore remains an unknown outcome, even before the intended source ends. Supply `knownLength` / `X-Upload-Length` whenever the final size is known. This detects a short body but does not make cancellation a rollback guarantee.
 
 The SDK abort request is best effort. Process crashes, lost connectivity, denied AbortMultipartUpload or failed cleanup can leave parts behind. Configure a storage lifecycle rule for incomplete multipart uploads and monitor failures. A completed object is never deleted automatically to simulate rollback. If cancellation races with finalization, the object may exist even though the client saw no success.
 

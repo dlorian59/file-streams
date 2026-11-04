@@ -19,7 +19,7 @@ subprojects {
     tasks.withType<Test>().configureEach { useJUnitPlatform(); maxHeapSize = if (providers.gradleProperty("memoryProbe").isPresent) "96m" else "192m"
         if (providers.gradleProperty("memoryProbe").isPresent) jvmArgs("-XX:MaxDirectMemorySize=64m") }
     tasks.withType<Jar>().configureEach {
-        archiveBaseName.set(if (project.name == "core") "s3-file-streams" else "s3-file-streams-${project.name}")
+        archiveBaseName.set(if (project.name == "core") "file-streams" else "file-streams-${project.name}")
         from(rootProject.file("LICENSE")) { into("META-INF") }
     }
     dependencies {
@@ -32,14 +32,14 @@ subprojects {
         publications {
             create<MavenPublication>("library") {
                 from(components["java"])
-                artifactId = if (project.name == "core") "s3-file-streams" else "s3-file-streams-${project.name}"
+                artifactId = if (project.name == "core") "file-streams" else "file-streams-${project.name}"
                 pom {
-                    name.set("S3 File Streams ${project.name}")
+                    name.set("File Streams ${project.name}")
                     description.set("Continuous reactive object uploads and downloads with explicit resource bounds")
-                    url.set("https://github.com/59Alex/s3-file-streams")
+                    url.set("https://github.com/59Alex/file-streams")
                     licenses { license { name.set("MIT License"); url.set("https://opensource.org/license/mit") } }
                     developers { developer { id.set("59Alex"); name.set("Aleksandr Kashevarov") } }
-                    scm { url.set("https://github.com/59Alex/s3-file-streams"); connection.set("scm:git:https://github.com/59Alex/s3-file-streams.git") }
+                    scm { url.set("https://github.com/59Alex/file-streams"); connection.set("scm:git:https://github.com/59Alex/file-streams.git") }
                 }
             }
         }

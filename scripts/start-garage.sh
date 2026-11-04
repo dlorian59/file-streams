@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# Disposable development fixture. Do not reuse these public credentials in production.
+# EN: Disposable development fixture. Do not reuse these public credentials in production.
+# RU: Временный fixture разработки. Эти публичные credentials нельзя использовать в production.
 repo_dir="$(cd "$(dirname "$0")/.." && pwd -P)"
 state_dir="$repo_dir/build/garage"
 mkdir -p "$state_dir/storage"

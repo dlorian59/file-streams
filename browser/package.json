@@ -1,5 +1,5 @@
 {
-  "name": "@59alex/s3-file-streams",
+  "name": "@59alex/file-streams",
   "version": "0.1.0",
   "description": "Continuous browser upload and download streams with explicit commit validation",
   "type": "module",
@@ -24,14 +24,15 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "npm run build && node --test test/*.test.mjs",
+    "test": "npm run build && npm run test:examples && node --test test/*.test.mjs",
     "prepack": "npm run build",
     "demo": "npm run build && node scripts/browser-fixture.mjs",
-    "test:package": "node scripts/consumer-smoke.mjs"
+    "test:package": "node scripts/consumer-smoke.mjs",
+    "test:examples": "tsc --ignoreConfig --noEmit --strict --target ES2022 --module NodeNext --moduleResolution NodeNext --lib ES2022,DOM demo/transfer-example.ts"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/59Alex/s3-file-streams.git",
+    "url": "git+https://github.com/59Alex/file-streams.git",
     "directory": "browser"
   },
   "publishConfig": {

@@ -1,9 +1,9 @@
-# @59alex/s3-file-streams — browser
+# @59alex/file-streams — browser
 
 <details name="readme-language">
 <summary><picture><source media="(prefers-color-scheme: dark)" srcset="assets/lang-en-dark.svg"><img src="assets/lang-en-light.svg" width="42" height="26" alt="EN"></picture></summary>
 
-[← Back to repository README / Назад к README библиотеки](https://github.com/59Alex/s3-file-streams/blob/main/README.md)
+[← Back to repository README / Назад к README библиотеки](https://github.com/59Alex/file-streams/blob/main/README.md)
 
 Version **0.1.0** · TypeScript / ES modules · Web Streams + Fetch · MIT
 
@@ -23,15 +23,15 @@ npm run test:package
 npm pack
 ```
 
-Install the resulting `59alex-s3-file-streams-0.1.0.tgz` in a consumer project:
+Install the resulting `59alex-file-streams-0.1.0.tgz` in a consumer project:
 
 ```sh
-npm install ./59alex-s3-file-streams-0.1.0.tgz
+npm install ./59alex-file-streams-0.1.0.tgz
 ```
 
 ```ts
 import { uploadStream, downloadTo, objectUrl, streamCapabilities, TransferError }
-  from '@59alex/s3-file-streams';
+  from '@59alex/file-streams';
 ```
 
 The package exports ES modules and TypeScript declarations. Include the DOM library in the consumer's TypeScript configuration. Node is used for tests/tooling; a Node fetch implementation is not evidence of browser transport compatibility.
@@ -159,6 +159,8 @@ Abort is not a rollback promise. A server may commit while cancellation or a los
 
 Synchronous and asynchronous progress-observer exceptions are ignored so a UI callback cannot turn an observed commit into a failure. Observers are not awaited and should remain inexpensive. They do not apply backpressure.
 
+Local subscription cancellation and source errors are distinct from HTTP termination. If a transport presents termination as normal EOF for an unknown-length request, a backend can accept the received prefix; a browser abort remains an unknown outcome even before the intended source ends. Supply `knownLength` / `X-Upload-Length` whenever the final size is known. This detects a short body without promising rollback.
+
 ## 5. Stream a download to a caller-owned sink
 
 The core accepts any writable byte stream. This JavaScript example uses the optional File System Access API; availability depends on the browser and a user gesture.
@@ -247,14 +249,14 @@ The [browser checks](demo/browser-checks.js) are readable executable scenarios. 
 
 [MIT](LICENSE). No runtime dependency is bundled. Browser and server behavior remains subject to their own platform contracts.
 
-[← Back to repository README / Назад к README библиотеки](https://github.com/59Alex/s3-file-streams/blob/main/README.md)
+[← Back to repository README / Назад к README библиотеки](https://github.com/59Alex/file-streams/blob/main/README.md)
 
 </details>
 
 <details name="readme-language" open>
 <summary><picture><source media="(prefers-color-scheme: dark)" srcset="assets/lang-ru-dark.svg"><img src="assets/lang-ru-light.svg" width="42" height="26" alt="RU"></picture></summary>
 
-[← Back to repository README / Назад к README библиотеки](https://github.com/59Alex/s3-file-streams/blob/main/README.md)
+[← Back to repository README / Назад к README библиотеки](https://github.com/59Alex/file-streams/blob/main/README.md)
 
 **0.1.0 · TypeScript / ES modules · Web Streams + Fetch · MIT**
 
@@ -273,14 +275,14 @@ npm test
 npm run test:package
 npm pack
 # Выполнить в проекте-потребителе, указав путь к созданному архиву:
-npm install ./59alex-s3-file-streams-0.1.0.tgz
+npm install ./59alex-file-streams-0.1.0.tgz
 ```
 
 Пакет экспортирует ES-модули и TypeScript declarations. В tsconfig приложения нужна библиотека DOM.
 
 ```ts
 import { uploadStream, downloadTo, objectUrl, streamCapabilities, TransferError }
-  from '@59alex/s3-file-streams';
+  from '@59alex/file-streams';
 ```
 
 ## Возможности
@@ -369,6 +371,8 @@ stop.abort('Пользователь отменил загрузку');
 
 Автоматических повторов нет. Для повторной попытки приложение создаёт новый исходный поток и решает, как проверить или перезаписать предыдущий объект. Отмена не является подтверждением удаления объекта. При ошибках финализации сервер может вернуть committed:null; это тоже unknown.
 
+Локальная отмена подписки или ошибка источника отличаются от завершения HTTP-запроса. Если транспорт передаёт завершение как обычный EOF при неизвестной длине, backend может принять полученный префикс. Поэтому browser abort остаётся неизвестным исходом даже до предполагаемого конца источника. Передавайте `knownLength` / `X-Upload-Length`, когда итоговый размер известен: это обнаруживает короткое тело, но не превращает отмену в гарантию отката.
+
 ## 5. Скачать в поток приложения
 
 ```ts
@@ -442,6 +446,6 @@ npm run demo
 
 [MIT](LICENSE), © 2026 Aleksandr Kashevarov.
 
-[← Back to repository README / Назад к README библиотеки](https://github.com/59Alex/s3-file-streams/blob/main/README.md)
+[← Back to repository README / Назад к README библиотеки](https://github.com/59Alex/file-streams/blob/main/README.md)
 
 </details>

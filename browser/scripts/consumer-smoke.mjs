@@ -11,14 +11,14 @@ try {
   if (files.some(name => /^(src|test|demo|scripts|node_modules|output)\//.test(name))) throw new Error('Development files leaked into npm pack');
   writeFileSync(join(temp, 'package.json'), JSON.stringify({ private: true, type: 'module' }));
   execFileSync('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', join(temp, packed[0].filename)], { cwd: temp, stdio: 'inherit' });
-  writeFileSync(join(temp, 'types.ts'), `import { uploadStream, downloadTo, streamCapabilities, objectUrl, TransferError, type UploadCommit, type ByteRange } from '@59alex/s3-file-streams';
+  writeFileSync(join(temp, 'types.ts'), `import { uploadStream, downloadTo, streamCapabilities, objectUrl, TransferError, type UploadCommit, type ByteRange } from '@59alex/file-streams';
 const range: ByteRange = { start: 0, end: 1 };
 const commit: Promise<UploadCommit> = uploadStream({ url: objectUrl('https://example.test/objects', 'key'), key: 'key', maxBytes: 0, source: new ReadableStream<Uint8Array>() });
 void [range, commit, downloadTo, streamCapabilities, new TransferError('ABORTED', 'test')];
 `);
   execFileSync(join(root, 'node_modules/.bin/tsc'), ['--noEmit', '--strict', '--module', 'NodeNext', '--moduleResolution', 'NodeNext', '--target', 'ES2022', '--lib', 'ES2022,DOM', 'types.ts'], { cwd: temp, stdio: 'inherit' });
   writeFileSync(join(temp, 'runtime.mjs'), `import assert from 'node:assert/strict';
-import { uploadStream, downloadTo } from '@59alex/s3-file-streams';
+import { uploadStream, downloadTo } from '@59alex/file-streams';
 const commit = await uploadStream({ url: 'https://example.test/key', key: 'key', maxBytes: 0,
 source: new ReadableStream({ start(c) { c.close(); } }),
 fetch: async (_url, init) => { const reader=init.body.getReader(); assert.equal((await reader.read()).done,true); reader.releaseLock(); return Response.json({committed:true,key:'key',bytes:0,etag:'opaque'},{status:201}); } });

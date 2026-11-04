@@ -38,6 +38,10 @@ Error shape:
 
 `committed:false` means this request was rejected before its commit path. It does not assert that a pre-existing object is absent, nor that orphaned multipart parts are already removed. `committed:null`, network failure or cancellation during/after PUT may mean that the object was committed. Reconcile by an application-owned upload identity/key and storage metadata. Do not blindly replay an unknown outcome.
 
+Local subscription cancellation and source errors are distinct from HTTP termination. If a transport presents termination as normal EOF for an unknown-length request, a backend can accept the received prefix; a browser abort therefore remains an unknown outcome, even before the intended source ends. Supply `knownLength` / `X-Upload-Length` whenever the final size is known. This detects a short body but does not make cancellation a rollback guarantee.
+
+Локальная отмена подписки или ошибка источника отличаются от завершения HTTP-запроса. Если транспорт передаёт завершение как обычный EOF при неизвестной длине, backend может принять полученный префикс. Поэтому browser abort остаётся неизвестным исходом даже до предполагаемого конца источника. Передавайте `knownLength` / `X-Upload-Length`, когда итоговый размер известен: это обнаруживает короткое тело, но не превращает отмену в гарантию отката.
+
 ## Download
 
 `GET /objects/{encoded-key}` streams bytes with Content-Length, Content-Type, ETag and Accept-Ranges: bytes. S3 HEAD and conditional GET with If-Match protect the metadata/body version relationship. No compression is added by the demo; objects with nonidentity S3 content encoding are rejected by the adapter.

@@ -4,7 +4,8 @@ import io.github.alex59.filestreams.webflux.*;
 import java.nio.ByteBuffer;
 import java.util.OptionalLong;
 import reactor.core.publisher.Flux;
-/** Package consumer; no source-project dependencies and no storage credentials. */
+// EN: Resolve published local artifacts without source-project dependencies or storage credentials.
+// RU: Используем локальные Maven-артефакты без зависимостей на исходный проект и credentials хранилища.
 public final class Consumer {
     public static void main(String[] args) {
         var stream=new CheckedStream(Flux.just(ByteBuffer.wrap(new byte[]{1,2,3})),OptionalLong.of(3),StreamLimits.defaults());

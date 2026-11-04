@@ -1,4 +1,4 @@
-# s3-file-streams 0.1.0 — guide
+# file-streams 0.1.0 — guide
 
 [← Back to documentation and versions / Назад к документации и версиям](../index.md)
 
@@ -27,8 +27,8 @@ In a consuming Gradle Kotlin DSL project:
 ```kotlin
 repositories { mavenLocal(); mavenCentral() }
 dependencies {
-    implementation("io.github.59alex:s3-file-streams-s3:0.1.0")
-    implementation("io.github.59alex:s3-file-streams-webflux:0.1.0")
+    implementation("io.github.59alex:file-streams-s3:0.1.0")
+    implementation("io.github.59alex:file-streams-webflux:0.1.0")
 }
 ```
 
@@ -93,7 +93,9 @@ var subscription = files.upload(UploadRequest.unknownLength("deadline.bin"), fre
 subscription.dispose();
 ```
 
-Use a fresh source for each new upload, as `freshSource` does here. A timeout/disposal cancels upstream and asks the SDK error path to clean up. Cancellation during finalization can still leave a committed object. No automatic delete is attempted. Inspect/reconcile the object by your upload identity before retrying; do not call retry() on a consumed stream. Configure incomplete-multipart lifecycle cleanup for crash/network/permission failures. ETags are not hashes.
+Use a fresh source for each new upload, as `freshSource` does here. A local Java timeout/disposal cancels upstream and asks the SDK error path to clean up. Cancellation during finalization can still leave a committed object. No automatic delete is attempted. Inspect/reconcile the object by your upload identity before retrying; do not call retry() on a consumed stream. Configure incomplete-multipart lifecycle cleanup for crash/network/permission failures. ETags are not hashes.
+
+Local subscription cancellation and source errors are distinct from HTTP termination. If a transport presents termination as normal EOF for an unknown-length request, a backend can accept the received prefix; a browser abort therefore remains an unknown outcome, even before the intended source ends. Supply `knownLength` / `X-Upload-Length` whenever the final size is known. This detects a short body but does not make cancellation a rollback guarantee.
 
 ## 5. Download and close
 

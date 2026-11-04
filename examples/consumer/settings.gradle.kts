@@ -1,1 +1,1 @@
-rootProject.name = "s3-file-streams-consumer"
+rootProject.name = "file-streams-consumer"
