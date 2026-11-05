@@ -3,7 +3,7 @@
 <details name="readme-language">
 <summary><picture><source media="(prefers-color-scheme: dark)" srcset="assets/lang-en-dark.svg"><img src="assets/lang-en-light.svg" width="42" height="26" alt="EN"></picture></summary>
 
-[← Back to repository README / Назад к README библиотеки](https://github.com/59Alex/file-streams/blob/main/README.md)
+[← Back to repository README / Назад к README библиотеки](https://github.com/dlorian59/file-streams/blob/main/README.md)
 
 Version **0.1.0** · TypeScript / ES modules · Web Streams + Fetch · MIT
 
@@ -36,7 +36,7 @@ import { uploadStream, downloadTo, objectUrl, streamCapabilities, TransferError 
 
 The package exports ES modules and TypeScript declarations. Include the DOM library in the consumer's TypeScript configuration. Node is used for tests/tooling; a Node fetch implementation is not evidence of browser transport compatibility.
 
-[Complete Java/TypeScript API reference](https://github.com/59Alex/file-streams/blob/main/docs/0.1.0/reference-en.md) includes every option, error code, HTTP status and a paired Java/TS capability map.
+[Complete Java/TypeScript API reference](https://github.com/dlorian59/file-streams/blob/main/docs/0.1.0/reference-en.md) includes every option, error code, HTTP status and a paired Java/TS capability map.
 
 ## Capabilities at a glance
 
@@ -251,14 +251,14 @@ The [browser checks](demo/browser-checks.js) are readable executable scenarios. 
 
 [MIT](LICENSE). No runtime dependency is bundled. Browser and server behavior remains subject to their own platform contracts.
 
-[← Back to repository README / Назад к README библиотеки](https://github.com/59Alex/file-streams/blob/main/README.md)
+[← Back to repository README / Назад к README библиотеки](https://github.com/dlorian59/file-streams/blob/main/README.md)
 
 </details>
 
 <details name="readme-language" open>
 <summary><picture><source media="(prefers-color-scheme: dark)" srcset="assets/lang-ru-dark.svg"><img src="assets/lang-ru-light.svg" width="42" height="26" alt="RU"></picture></summary>
 
-[← Back to repository README / Назад к README библиотеки](https://github.com/59Alex/file-streams/blob/main/README.md)
+[← Back to repository README / Назад к README библиотеки](https://github.com/dlorian59/file-streams/blob/main/README.md)
 
 **0.1.0 · TypeScript / ES modules · Web Streams + Fetch · MIT**
 
@@ -299,7 +299,7 @@ import { uploadStream, downloadTo, objectUrl, streamCapabilities, TransferError 
 | Ограничения | Обязательный maxBytes, необязательный knownLength, безопасные целые счётчики, максимум 16 КиБ JSON-метаданных. |
 | Прогресс | Отдельно чтение исходного потока и подтверждённый commit. При скачивании — байты, принятые завершившимися записями sink. |
 
-[Полный справочник Java/TypeScript API](https://github.com/59Alex/file-streams/blob/main/docs/0.1.0/reference-ru.md) перечисляет все параметры, коды ошибок, HTTP-статусы и парные примеры Java/TS.
+[Полный справочник Java/TypeScript API](https://github.com/dlorian59/file-streams/blob/main/docs/0.1.0/reference-ru.md) перечисляет все параметры, коды ошибок, HTTP-статусы и парные примеры Java/TS.
 
 ## 1. Проверить браузер и реальный HTTP-путь
 
@@ -450,6 +450,6 @@ npm run demo
 
 [MIT](LICENSE), © 2026 Aleksandr Kashevarov.
 
-[← Back to repository README / Назад к README библиотеки](https://github.com/59Alex/file-streams/blob/main/README.md)
+[← Back to repository README / Назад к README библиотеки](https://github.com/dlorian59/file-streams/blob/main/README.md)
 
 </details>

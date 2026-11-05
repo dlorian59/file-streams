@@ -32,7 +32,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/59Alex/file-streams.git",
+    "url": "git+https://github.com/dlorian59/file-streams.git",
     "directory": "browser"
   },
   "publishConfig": {

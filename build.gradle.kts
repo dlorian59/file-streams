@@ -36,10 +36,10 @@ subprojects {
                 pom {
                     name.set("File Streams ${project.name}")
                     description.set("Continuous reactive object uploads and downloads with explicit resource bounds")
-                    url.set("https://github.com/59Alex/file-streams")
+                    url.set("https://github.com/dlorian59/file-streams")
                     licenses { license { name.set("MIT License"); url.set("https://opensource.org/license/mit") } }
-                    developers { developer { id.set("59Alex"); name.set("Aleksandr Kashevarov") } }
-                    scm { url.set("https://github.com/59Alex/file-streams"); connection.set("scm:git:https://github.com/59Alex/file-streams.git") }
+                    developers { developer { id.set("dlorian59"); name.set("Aleksandr Kashevarov") } }
+                    scm { url.set("https://github.com/dlorian59/file-streams"); connection.set("scm:git:https://github.com/dlorian59/file-streams.git") }
                 }
             }
         }

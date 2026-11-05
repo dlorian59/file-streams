@@ -55,7 +55,7 @@ Mono<UploadResult> committed = files.upload(request, requestBody);
 Mono<ObjectDownload> opened = files.download(key, rangeHeader);
 ```
 
-The existing [WebFlux handler](webflux/src/main/java/io/github/alex59/filestreams/webflux/ObjectStreamHandler.java) connects those operations to HTTP and owns download cleanup. [Annotated TypeScript](browser/demo/transfer-example.ts) · [annotated Java](demo/src/main/java/io/github/alex59/filestreams/demo/TransferExamples.java). The companion [Spring Boot starter](https://github.com/59Alex/file-streams-spring-boot-starter) supplies opt-in configuration and `/objects/**`; [React integration](https://github.com/59Alex/file-streams-react) supplies UI lifecycle around the same browser API. Companion repositories are currently prepared locally; remote creation and registry publication are pending.
+The existing [WebFlux handler](webflux/src/main/java/io/github/alex59/filestreams/webflux/ObjectStreamHandler.java) connects those operations to HTTP and owns download cleanup. [Annotated TypeScript](browser/demo/transfer-example.ts) · [annotated Java](demo/src/main/java/io/github/alex59/filestreams/demo/TransferExamples.java). The companion [Spring Boot starter](https://github.com/dlorian59/file-streams-spring-boot-starter) supplies opt-in configuration and `/objects/**`; [React integration](https://github.com/dlorian59/file-streams-react) supplies UI lifecycle around the same browser API. Companion repositories are currently prepared locally; remote creation and registry publication are pending.
 
 ## What is verified
 
@@ -110,7 +110,7 @@ Mono<UploadResult> committed = files.upload(request, requestBody);
 Mono<ObjectDownload> opened = files.download(key, rangeHeader);
 ```
 
-[WebFlux handler](webflux/src/main/java/io/github/alex59/filestreams/webflux/ObjectStreamHandler.java) связывает операции с HTTP и освобождает ресурсы скачивания. [TypeScript с комментариями](browser/demo/transfer-example.ts) · [Java с комментариями](demo/src/main/java/io/github/alex59/filestreams/demo/TransferExamples.java). [Spring Boot starter](https://github.com/59Alex/file-streams-spring-boot-starter) подключает конфигурацию и `/objects/**`, [React-интеграция](https://github.com/59Alex/file-streams-react) управляет состоянием интерфейса поверх того же API. Эти companion-репозитории пока подготовлены локально; удалённое создание и публикация пакетов ещё не выполнены.
+[WebFlux handler](webflux/src/main/java/io/github/alex59/filestreams/webflux/ObjectStreamHandler.java) связывает операции с HTTP и освобождает ресурсы скачивания. [TypeScript с комментариями](browser/demo/transfer-example.ts) · [Java с комментариями](demo/src/main/java/io/github/alex59/filestreams/demo/TransferExamples.java). [Spring Boot starter](https://github.com/dlorian59/file-streams-spring-boot-starter) подключает конфигурацию и `/objects/**`, [React-интеграция](https://github.com/dlorian59/file-streams-react) управляет состоянием интерфейса поверх того же API. Эти companion-репозитории пока подготовлены локально; удалённое создание и публикация пакетов ещё не выполнены.
 
 ## Запуск
 
