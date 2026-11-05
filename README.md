@@ -73,6 +73,8 @@ Cancellation or a lost response can leave the upload result unknown, including b
 
 [Integration / Подключение](docs/0.1.0/integration-en.md) · [Guide / Руководство](docs/0.1.0/en.md) · [Reference / Справочник](docs/0.1.0/reference-en.md) · [Versions / Версии](docs/index.md) · [Verification / Проверки](docs/VERIFICATION.md) · [MIT](LICENSE)
 
+For video messages, [video-streams](https://github.com/dlorian59/video-streams) adds FFmpeg preparation and HLS segment playback over this file storage. Use its [Spring Boot starter](https://github.com/dlorian59/video-streams-spring-boot-starter) and [React components](https://github.com/dlorian59/video-streams-react) for the complete upload-to-playback flow.
+
 </details>
 
 <details name="readme-language" open>
@@ -147,5 +149,7 @@ Java 17+, Boot 4.1.2 WebFlux; WebFlux уже входит в зависимос�
 Отмена или потерянный ответ могут оставить результат загрузки неизвестным, в том числе до ожидаемого конца HTTP-тела неизвестной длины. Одноразовый поток автоматически не повторяется. Передавайте известный размер всегда, когда он доступен. Для браузерной загрузки нужен проверенный HTTP/2 или HTTP/3/TLS; fallback с полным буфером файла не предусмотрен.
 
 [Integration / Подключение](docs/0.1.0/integration-ru.md) · [Guide / Руководство](docs/0.1.0/ru.md) · [Reference / Справочник](docs/0.1.0/reference-ru.md) · [Versions / Версии](docs/index.md) · [Verification / Проверки](docs/VERIFICATION.md) · [MIT](LICENSE)
+
+Для видеосообщений [video-streams](https://github.com/dlorian59/video-streams) добавляет подготовку FFmpeg и воспроизведение HLS-сегментов поверх этого файлового хранилища. [Spring Boot стартер](https://github.com/dlorian59/video-streams-spring-boot-starter) и [React-компоненты](https://github.com/dlorian59/video-streams-react) связывают загрузку исходника с просмотром.
 
 </details>
