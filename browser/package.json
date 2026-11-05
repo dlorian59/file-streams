@@ -28,7 +28,7 @@
     "prepack": "npm run build",
     "demo": "npm run build && node scripts/browser-fixture.mjs",
     "test:package": "node scripts/consumer-smoke.mjs",
-    "test:examples": "tsc --ignoreConfig --noEmit --strict --target ES2022 --module NodeNext --moduleResolution NodeNext --lib ES2022,DOM demo/transfer-example.ts"
+    "test:examples": "tsc --ignoreConfig --noEmit --strict --target ES2022 --module NodeNext --moduleResolution NodeNext --lib ES2022,DOM demo/transfer-example.ts demo/application-files.ts"
   },
   "repository": {
     "type": "git",

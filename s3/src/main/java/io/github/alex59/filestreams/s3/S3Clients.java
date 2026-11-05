@@ -18,6 +18,11 @@ public final class S3Clients {
 
     private S3Clients() {}
 
+    /** Use the regional AWS endpoint; the caller owns and closes the client. */
+    public static S3AsyncClient bounded(Region region, AwsCredentialsProvider credentials) {
+        return bounded(null, region, credentials);
+    }
+
     public static S3AsyncClient bounded(
             URI endpoint, Region region, AwsCredentialsProvider credentials) {
         var builder =

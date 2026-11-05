@@ -18,6 +18,11 @@ public record UploadRequest(String key, OptionalLong length, String contentType,
         if (contentType.isBlank() || contentType.contains("\r") || contentType.contains("\n"))
             throw new IllegalArgumentException("invalid contentType");
     }
+    /** A source with a known final size; short and oversized streams are rejected. */
+    public static UploadRequest knownLength(String key, long bytes, String contentType) {
+        return new UploadRequest(key, OptionalLong.of(bytes), contentType, Map.of());
+    }
+
     public static UploadRequest unknownLength(String key) {
         return new UploadRequest(key, OptionalLong.empty(), "application/octet-stream", Map.of());
     }

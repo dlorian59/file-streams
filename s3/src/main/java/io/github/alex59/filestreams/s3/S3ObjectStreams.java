@@ -35,6 +35,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * application-owned client.
  */
 public final class S3ObjectStreams implements ObjectStreams {
+    /** Shared upload/download admission slots for the convenience profile. */
+    public static final int DEFAULT_MAX_TRANSFERS = 2;
+
+    /** The application retains ownership of the supplied async client. */
+    public S3ObjectStreams(S3AsyncClient client, String bucket, StreamProfile profile) {
+        this(client, bucket, Objects.requireNonNull(profile, "profile").limits(), DEFAULT_MAX_TRANSFERS);
+    }
+
     private final S3AsyncClient client;
     private final String bucket;
     private final StreamLimits limits;

@@ -1,5 +1,7 @@
 # file-streams 0.1.0 — руководство
 
+[Existing application / Существующее приложение](integration-ru.md)
+
 [← Back to documentation and versions / Назад к документации и версиям](../index.md)
 
 [EN](en.md) · [RU](ru.md) · [Версии](../index.md) · [Java 17 / 21 / 25 / 27](../JAVA-SUPPORT.md)
@@ -51,7 +53,7 @@ import software.amazon.awssdk.regions.Region;
 var client = S3Clients.bounded(
     URI.create("http://127.0.0.1:19390"), Region.of("garage"),
     DefaultCredentialsProvider.create());
-var limits = new StreamLimits(16L * 1024 * 1024 * 1024, 1024 * 1024);
+var limits = StreamProfile.ARCHIVES.limits();
 var files = new S3ObjectStreams(client, "my-bucket", limits, 2);
 ```
 

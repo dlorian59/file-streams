@@ -37,7 +37,7 @@ public final class DemoServer {
                                         "synthetic-local-test-secret-not-for-production")));
         try (var client =
                 S3Clients.bounded(endpoint, Region.of(env("S3_REGION", "garage")), credentials)) {
-            var limits = new StreamLimits(512L * 1024 * 1024, 1024 * 1024);
+            var limits = io.github.alex59.filestreams.StreamProfile.MEDIA.limits();
             var store = new S3ObjectStreams(client, env("S3_BUCKET", "stream-tests"), limits, 2);
             var cors = new CorsConfiguration();
             cors.setAllowedOrigins(List.of(env("DEMO_ORIGIN", "http://127.0.0.1:18080")));

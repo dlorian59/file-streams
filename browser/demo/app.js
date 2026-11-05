@@ -1,4 +1,4 @@
-import { uploadStream, downloadTo, objectUrl, streamCapabilities } from '/dist/index.js';
+import { fileProfiles, uploadStream, downloadTo, objectUrl, streamCapabilities } from '/dist/index.js';
 import { runBrowserChecks } from '/demo/browser-checks.js';
 import { runJavaIntegrationChecks } from '/demo/java-integration-checks.js';
 const base = document.querySelector('#base');
@@ -14,7 +14,7 @@ document.querySelector('#upload').onclick = async () => {
   try {
     const key = document.querySelector('#key').value;
     const commit = await uploadStream({ url: objectUrl(base.value, key), key, source: file.stream(),
-      knownLength: file.size, maxBytes: 512 * 1024 * 1024, signal: active.signal,
+      knownLength: file.size, maxBytes: fileProfiles.media.maxBytes, signal: active.signal,
       headers: { 'Content-Type': file.type || 'application/octet-stream' },
       onProgress(progress) {
         show(progress.phase === 'reading' ? `Source read: ${progress.bytesRead}/${file.size} bytes. Commit not confirmed.`
@@ -36,7 +36,7 @@ downloadButton.onclick = async () => {
     destination = await handle.createWritable();
     active?.abort(); active = new AbortController();
     const result = await downloadTo({ url: objectUrl(base.value, key), destination,
-      maxBytes: 512 * 1024 * 1024, signal: active.signal,
+      maxBytes: fileProfiles.media.maxBytes, signal: active.signal,
       onProgress(progress) { show(`Sink accepted: ${progress.bytesWritten}/${progress.responseBytes} bytes.`); } });
     show(JSON.stringify(result, null, 2));
   } catch (error) {

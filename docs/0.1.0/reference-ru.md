@@ -1,5 +1,7 @@
 # 0.1.0 — полный справочник API и возможностей
 
+[Configured integration / Готовое подключение](integration-ru.md)
+
 [← Руководство](ru.md) · [Версии](../index.md) · [README](../../README.md) · [EN](reference-en.md)
 
 [Карта возможностей](#карта-возможностей) · [Java API](#java-api) · [Профиль S3](#профиль-s3) · [Browser API](#browser-api) · [Ошибки и HTTP](#ошибки-и-http) · [Ресурсы и AOP](#ресурсы-и-aop) · [Диагностика](#диагностика)
@@ -180,3 +182,15 @@ Retry/cache/repeat aspect не установлен: такие оператор
 | Недоступны Docker snapshot или JDK 27 | Зафиксируйте непроведённую проверку. Историческое evidence не является новым запуском. |
 
 [← Руководство](ru.md) · [Версии](../index.md) · [README](../../README.md) · [EN](reference-en.md)
+
+## Configured client and profiles / Настроенный клиент и профили
+
+`createFileStreams(options)` accepts `objectsUrl` (required; browser-relative or absolute, absolute in Node/SSR), `profile` (attachments default), optional `maxBytes`, `headers`, `credentials`, `fetch`. It returns `uploadFile(key, Blob, options?)`, `upload(key, ReadableStream, options?)`, `download(key, WritableStream, options?)`. All operations accept `signal`, `headers`, `onProgress`; stream upload adds `knownLength`; download adds `range`. No automatic retry or new protocol. Full TypeScript types: `FileProfile`, `FileStreamsOptions`, `FileUploadOptions`, `StreamUploadOptions`, `StreamDownloadOptions`. Invalid configuration or URL/key may throw synchronously; transfer errors retain existing TransferError semantics. File.type is used unless Content-Type is already set.
+
+`fileProfiles` exports immutable attachments/media/archives bounds. Java `StreamProfile.ATTACHMENTS/MEDIA/ARCHIVES` exposes `maxBytes()` and `limits()` with 1 MiB source buffer. `StreamLimits.defaults()` remains ARCHIVES. `UploadRequest.knownLength(key,bytes,contentType)` omits empty metadata boilerplate; `ObjectStreams.download(key)` requests a complete object with unchanged resource ownership. `S3Clients.bounded(region,credentials)` selects AWS without a null endpoint. `new S3ObjectStreams(client,bucket,profile)` uses `DEFAULT_MAX_TRANSFERS` (2) and leaves the client application-owned. Explicit existing overloads remain.
+
+`ObjectStreamHandler.handle(exchange,key)` accepts an already authorized logical key from a custom controller; the original handle(exchange) parses /objects. It reuses the same PUT/GET, byte/range checks, error mapping and resource cleanup. It does not authorize the supplied key.
+
+`createFileStreams` принимает обязательный objectsUrl (относительный или абсолютный в браузере, абсолютный в Node/SSR), profile (attachments по умолчанию), optional maxBytes/headers/credentials/fetch. Методы: uploadFile(key,Blob,options?), upload(key,ReadableStream,options?), download(key,WritableStream,options?). Общие параметры операций: signal/headers/onProgress, для stream-upload knownLength, для скачивания range. Автоповтора и второго протокола нет. Неверная конфигурация или URL/key могут выбросить синхронную ошибку; TransferError сохраняет прежний смысл. File.type используется, если Content-Type не задан.
+
+fileProfiles — immutable attachments/media/archives. Java StreamProfile даёт maxBytes()/limits() с буфером 1 МиБ; defaults() остаётся ARCHIVES. knownLength factory убирает пустую metadata, download(key) — null для полного файла. S3Clients.bounded(region,credentials) выбирает AWS без null; S3ObjectStreams(client,bucket,profile) использует DEFAULT_MAX_TRANSFERS=2 и не закрывает клиент приложения. handle(exchange,key) позволяет контроллеру повторно использовать HTTP/cleanup после собственной проверки прав; сам handler эти права не проверяет.

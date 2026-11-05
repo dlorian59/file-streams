@@ -44,16 +44,27 @@ public final class ObjectStreamHandler implements WebHandler {
                             } catch (IllegalArgumentException invalid) {
                                 return Mono.error(new InvalidRequest());
                             }
-                            HttpMethod method = exchange.getRequest().getMethod();
-                            if (method == HttpMethod.PUT) return upload(exchange, key);
-                            if (method == HttpMethod.GET) return download(exchange, key);
-                            exchange.getResponse().setStatusCode(HttpStatus.METHOD_NOT_ALLOWED);
-                            exchange.getResponse()
-                                    .getHeaders()
-                                    .setAllow(Set.of(HttpMethod.GET, HttpMethod.PUT));
-                            return exchange.getResponse().setComplete();
+                            return transfer(exchange, key);
                         })
                 .onErrorResume(error -> failure(exchange, error));
+    }
+
+    /**
+     * Serve an application-authorized key from a controller or custom route. The caller validates
+     * access before delegation; the raw-body, commit, range and cleanup contracts remain unchanged.
+     */
+    public Mono<Void> handle(ServerWebExchange exchange, String key) {
+        return Mono.defer(() -> transfer(exchange, key))
+                .onErrorResume(error -> failure(exchange, error));
+    }
+
+    private Mono<Void> transfer(ServerWebExchange exchange, String key) {
+        HttpMethod method = exchange.getRequest().getMethod();
+        if (method == HttpMethod.PUT) return upload(exchange, key);
+        if (method == HttpMethod.GET) return download(exchange, key);
+        exchange.getResponse().setStatusCode(HttpStatus.METHOD_NOT_ALLOWED);
+        exchange.getResponse().getHeaders().setAllow(Set.of(HttpMethod.GET, HttpMethod.PUT));
+        return exchange.getResponse().setComplete();
     }
 
     private Mono<Void> upload(ServerWebExchange exchange, String key) {

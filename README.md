@@ -3,136 +3,149 @@
 <details name="readme-language">
 <summary><picture><source media="(prefers-color-scheme: dark)" srcset="assets/lang-en-dark.svg"><img src="assets/lang-en-light.svg" width="42" height="26" alt="EN"></picture></summary>
 
-[Version 0.1.0 guide](docs/0.1.0/en.md) · [All versions](docs/index.md) · [Complete reference](docs/0.1.0/reference-en.md)
+Send files from the browser to Java/S3 and stream them back without loading the entire file into memory. Useful for attachments, media and exports: one continuous stream, confirmed upload results and explicit cancellation.
 
-Continuous browser ↔ Java ↔ S3 file transfer. Applications provide one stream; the S3 adapter manages bounded internal multipart requests. Upload progress and confirmed storage commit are different states.
+## Get started in your application
 
-```text
-ReadableStream → HTTP/2 request → WebFlux → Reactor → AWS SDK → S3
-WritableStream ← HTTP response  ← WebFlux ← Reactor ← AWS SDK ← S3
+Browser dependency (publication pending; [local artifact workflow](docs/0.1.0/en.md)):
+
+```json
+{ "dependencies": { "@59alex/file-streams": "0.1.0" } }
 ```
-
-| Module | What it provides |
-| --- | --- |
-| [`file-streams`](docs/0.1.0/en.md#3-upload-unknown-or-known-length) | One-shot byte streams, checked lengths and size limits, long counters, single ranges, explicit resource ownership |
-| [`file-streams-s3`](docs/0.1.0/en.md#2-create-the-application-owned-storage-client) | Stock AWS async multipart with a 10 MiB SDK buffer setting, one in-flight part, bounded transfer admission and cancellation cleanup |
-| [`file-streams-webflux`](docs/0.1.0/en.md#7-webflux-raw-body-adapter) | Raw-body PUT, streamed GET, declared-size checks, pooled DataBuffer release and commit-aware errors |
-| [`@59alex/file-streams`](browser/README.md) | Browser ReadableStream / WritableStream, AbortSignal, progress and strict response validation |
-
-Java 17 is the minimum; Java 21, 25 and 27 run the same API. [Features used by runtime](docs/JAVA-SUPPORT.md). React integration is maintained as a separate companion package.
-
-## Build and use
-
-Requires JDK 17+ and Node.js 20+. These checks need no running S3 service. The consumer prints `Published-artifact consumer passed: core + S3 + WebFlux`.
-
-```bash
-./gradlew build publishToMavenLocal -Dmaven.repo.local="$PWD/build/local-repository"
-./gradlew -p examples/consumer run
-cd browser
-npm ci
-npm test
-npm run test:package
-```
-
-Java coordinates are `io.github.59alex:file-streams[-s3|-webflux]:0.1.0`. The command above publishes to an isolated local repository for the example consumer. Use `./gradlew publishToMavenLocal` to install into your regular Maven Local repository; registry publication is a separate [release gate](ROADMAP.md). The [versioned guide](docs/0.1.0/en.md) shows dependencies and a code example for each capability. The [independent consumer](examples/consumer) verifies packaged artifacts rather than source-project dependencies.
-
-## Browser and Spring in one flow
-
-A document upload should not require separate multipart/session logic in React and Java. `file-streams` carries one stream through both sides, checks size boundaries and distinguishes progress from confirmed storage. Downloads await each destination write. These contracts reduce integration code without claiming production adoption or universal performance results.
 
 ```ts
-const commit = await uploadStream({
-  url: objectUrl(new URL('/objects', location.origin), key), key, source: file.stream(),
-  knownLength: file.size, maxBytes: 512 * 1024 * 1024,
+import { createFileStreams } from "@59alex/file-streams";
+
+const files = createFileStreams({
+  objectsUrl: "/attachments",
+  profile: "attachments",
 });
-await downloadTo({ url: objectUrl(new URL('/objects', location.origin), key), destination, maxBytes: 512 * 1024 * 1024 });
+const commit = await files.uploadFile("alice:invoice.pdf", file);
+await files.download(commit.key, destination);
 ```
 
-The corresponding Java operations are:
+`file` is the selected File; `destination` is a WritableStream obtained by the application. File size/type and URL encoding are automatic. `attachments` limits each transfer to 64 MiB. Successful upload means a validated storage commit, not just a fully read source. [Complete commented browser example](browser/demo/application-files.ts).
 
-```java
-Mono<UploadResult> committed = files.upload(request, requestBody);
-Mono<ObjectDownload> opened = files.download(key, rangeHeader);
+### Receive it in Spring WebFlux
+
+Maven:
+
+```xml
+<dependency>
+  <groupId>io.github.59alex</groupId>
+  <artifactId>file-streams-spring-boot-starter</artifactId>
+  <version>0.1.0</version>
+</dependency>
 ```
 
-The existing [WebFlux handler](webflux/src/main/java/io/github/alex59/filestreams/webflux/ObjectStreamHandler.java) connects those operations to HTTP and owns download cleanup. [Annotated TypeScript](browser/demo/transfer-example.ts) · [annotated Java](demo/src/main/java/io/github/alex59/filestreams/demo/TransferExamples.java). The companion [Spring Boot starter](https://github.com/dlorian59/file-streams-spring-boot-starter) supplies opt-in configuration and `/objects/**`; [React integration](https://github.com/dlorian59/file-streams-react) supplies UI lifecycle around the same browser API. Companion repositories are currently prepared locally; remote creation and registry publication are pending.
+Gradle:
 
-## What is verified
+```kotlin
+dependencies {
+    implementation("io.github.59alex:file-streams-spring-boot-starter:0.1.0")
+}
+```
 
-Garage 2.4.1 round trips cover empty and unknown-length bodies, 5 MiB internal part boundaries, SHA-256 equality, ranges, source failures and multipart cancellation cleanup. A real 2 GiB + 1 byte object passed with a 96 MiB Java heap; Garage compressed the repeating test payload. This is functional/resource evidence, not a throughput benchmark or an AWS/MinIO certification. [Exact measurements and remaining gates](docs/VERIFICATION.md).
+```yaml
+file-streams:
+  enabled: true
+  limits:
+    profile: attachments
+  s3:
+    bucket: ${ATTACHMENTS_BUCKET}
+    region: ${AWS_REGION}
+```
 
-The browser requires an actually working request-stream transport, usually HTTP/2 with TLS. A successful feature probe alone does not prove proxy or browser support. No whole-file Blob fallback is used. [Browser compatibility and API](browser/README.md).
+Java 17+, Boot 4.1.2 WebFlux; the dependency includes WebFlux. Add the ready [account-scoped AttachmentController](https://github.com/dlorian59/file-streams-spring-boot-starter/blob/main/examples/consumer/src/main/java/com/example/attachments/AttachmentController.java) to your application: it checks the principal, then delegates streaming to `ObjectStreamHandler`. [Complete file tree and integration](https://github.com/dlorian59/file-streams-spring-boot-starter#readme). Credentials and authentication remain application-owned. The starter artifacts are not yet published in Central.
 
-## Demo and boundaries
+## What you can do
 
-Docker and OpenSSL are required for the complete demo. [Run the isolated HTTP/2 demo](docs/0.1.0/en.md#local-end-to-end-demo). It has no authentication and binds to loopback. Production applications supply authorization, keys, CORS, storage policy and proxy configuration.
+| Task | Short API | Result and full example |
+| --- | --- | --- |
+| Save a selected file | `files.uploadFile(key, file)` | Validated commit; [source](browser/demo/application-files.ts) |
+| Stream a generated report | `files.upload(key, source)` | Unknown-length stream with bounded size; [guide](docs/0.1.0/integration-en.md#generated-content) |
+| Download or preview | `files.download(key, sink, { range })` | Backpressured writes, checked byte range; [source](browser/demo/transfer-example.ts) |
+| Cancel or show progress | `{ signal, onProgress }` | Distinguishes reading from committed; [guide](docs/0.1.0/integration-en.md#outcomes) |
+| Use Java without Spring | `StreamProfile.ATTACHMENTS.limits()` | Same core/S3 engines; [Java guide](docs/0.1.0/en.md) |
+| Add a ready React UI | `FileAttachment` | Upload/download states; [React integration](https://github.com/dlorian59/file-streams-react) |
 
-Cancelling the local Java subscription before EOF signals a source error so the SDK can abort an incomplete multipart upload. Cancellation during finalization may race with a successful commit; a lost acknowledgement means an unknown outcome. Local subscription cancellation and source errors are distinct from HTTP termination. If a transport presents termination as normal EOF for an unknown-length request, a backend can accept the received prefix; a browser abort therefore remains an unknown outcome, even before the intended source ends. Supply `knownLength` / `X-Upload-Length` whenever the final size is known. This detects a short body but does not make cancellation a rollback guarantee. Streams are not automatically retried. ETags are opaque identifiers, not checksums. [HTTP contract](docs/HTTP-CONTRACT.md) · [Architecture](docs/ARCHITECTURE.md).
+Cancellation or a lost response can leave the upload result unknown, including before intended EOF for unknown-length HTTP bodies. Do not automatically retry a one-shot stream. Supply a known size whenever available. Browser upload needs verified HTTP/2 or HTTP/3/TLS transport; no whole-file buffering fallback is provided.
 
-[MIT license](LICENSE) · Copyright 2026 Aleksandr Kashevarov.
+[Integration / Подключение](docs/0.1.0/integration-en.md) · [Guide / Руководство](docs/0.1.0/en.md) · [Reference / Справочник](docs/0.1.0/reference-en.md) · [Versions / Версии](docs/index.md) · [Verification / Проверки](docs/VERIFICATION.md) · [MIT](LICENSE)
 
 </details>
 
 <details name="readme-language" open>
 <summary><picture><source media="(prefers-color-scheme: dark)" srcset="assets/lang-ru-dark.svg"><img src="assets/lang-ru-light.svg" width="42" height="26" alt="RU"></picture></summary>
 
-[Руководство 0.1.0](docs/0.1.0/ru.md) · [Все версии](docs/index.md) · [Полный справочник](docs/0.1.0/reference-ru.md)
+Передавайте файлы из браузера в Java/S3 и обратно без загрузки файла целиком в память. Для вложений, медиа и экспортов: один непрерывный поток, подтверждение сохранения и явная отмена.
 
-Непрерывная передача файлов между браузером, Java-сервером и S3. Приложение передаёт один поток; адаптер сам выполняет внутренние multipart-запросы S3 с ограниченным буфером. Прочитанные байты и подтверждённое сохранение — разные состояния.
+## Подключение к вашему приложению
 
-| Модуль | Возможности |
-| --- | --- |
-| [`file-streams`](docs/0.1.0/ru.md#3-загрузка-с-неизвестной-или-известной-длиной) | Одноразовые потоки, проверка размера, счётчики long, одиночные byte ranges и управление ресурсами |
-| [`file-streams-s3`](docs/0.1.0/ru.md#2-клиент-и-ограничения) | AWS async SDK: настройка буфера 10 MiB, одна часть в полёте, ограничение числа передач и очистка при отмене |
-| [`file-streams-webflux`](docs/0.1.0/ru.md#7-webflux) | PUT с сырым телом, потоковый GET, освобождение DataBuffer, проверка длины и ошибки с состоянием commit |
-| [`@59alex/file-streams`](browser/README.md) | ReadableStream / WritableStream, AbortSignal, прогресс и проверка ответа сервера |
+Зависимость браузерного приложения (публикация ещё не выполнена; [локальные артефакты](docs/0.1.0/ru.md)):
 
-Минимум Java 17. На Java 21, 25 и 27 работает тот же API; [какие возможности языка используются](docs/JAVA-SUPPORT.md). React-интеграция вынесена в отдельный companion-пакет.
-
-## Браузер и Spring в одном потоке
-
-Для загрузки документов не нужно отдельно реализовывать multipart-сессии на React и Java. `file-streams` проводит один поток через обе стороны, проверяет ограничения размера и различает прогресс и подтверждённое сохранение. При скачивании следующая порция ждёт записи предыдущей. Это сокращает код интеграции; библиотека не обещает универсальную скорость и не заявляет вымышленные внедрения.
+```json
+{ "dependencies": { "@59alex/file-streams": "0.1.0" } }
+```
 
 ```ts
-const commit = await uploadStream({
-  url: objectUrl(new URL('/objects', location.origin), key), key,
-  source: file.stream(), knownLength: file.size, maxBytes: 512 * 1024 * 1024,
+import { createFileStreams } from "@59alex/file-streams";
+
+const files = createFileStreams({
+  objectsUrl: "/attachments",
+  profile: "attachments",
 });
-await downloadTo({
-  url: objectUrl(new URL('/objects', location.origin), key), destination, maxBytes: 512 * 1024 * 1024,
-});
+const commit = await files.uploadFile("alice:invoice.pdf", file);
+await files.download(commit.key, destination);
 ```
 
-На Java эти действия соответствуют:
+`file` — выбранный File, `destination` — WritableStream приложения. Размер, тип файла и кодирование URL передаются автоматически. `attachments` ограничивает передачу 64 МиБ. Успех загрузки — проверенный commit хранилища, а не только прочитанное тело. [Полный браузерный пример с комментариями](browser/demo/application-files.ts).
 
-```java
-Mono<UploadResult> committed = files.upload(request, requestBody);
-Mono<ObjectDownload> opened = files.download(key, rangeHeader);
+### Принять файл в Spring WebFlux
+
+Maven:
+
+```xml
+<dependency>
+  <groupId>io.github.59alex</groupId>
+  <artifactId>file-streams-spring-boot-starter</artifactId>
+  <version>0.1.0</version>
+</dependency>
 ```
 
-[WebFlux handler](webflux/src/main/java/io/github/alex59/filestreams/webflux/ObjectStreamHandler.java) связывает операции с HTTP и освобождает ресурсы скачивания. [TypeScript с комментариями](browser/demo/transfer-example.ts) · [Java с комментариями](demo/src/main/java/io/github/alex59/filestreams/demo/TransferExamples.java). [Spring Boot starter](https://github.com/dlorian59/file-streams-spring-boot-starter) подключает конфигурацию и `/objects/**`, [React-интеграция](https://github.com/dlorian59/file-streams-react) управляет состоянием интерфейса поверх того же API. Эти companion-репозитории пока подготовлены локально; удалённое создание и публикация пакетов ещё не выполнены.
+Gradle:
 
-## Запуск
-
-Нужны JDK 17+ и Node.js 20+. Для этих проверок S3 не требуется. Consumer выводит `Published-artifact consumer passed: core + S3 + WebFlux`.
-
-```bash
-./gradlew build publishToMavenLocal -Dmaven.repo.local="$PWD/build/local-repository"
-./gradlew -p examples/consumer run
-cd browser
-npm ci
-npm test
-npm run test:package
+```kotlin
+dependencies {
+    implementation("io.github.59alex:file-streams-spring-boot-starter:0.1.0")
+}
 ```
 
-Координаты Java: `io.github.59alex:file-streams[-s3|-webflux]:0.1.0`. Команда выше публикует артефакты в отдельный локальный каталог для примера consumer. Для установки в обычный Maven Local выполните `./gradlew publishToMavenLocal`; публикация в реестры — отдельный [этап выпуска](ROADMAP.md). В [руководстве](docs/0.1.0/ru.md) каждая возможность сопровождается примером.
+```yaml
+file-streams:
+  enabled: true
+  limits:
+    profile: attachments
+  s3:
+    bucket: ${ATTACHMENTS_BUCKET}
+    region: ${AWS_REGION}
+```
 
-На Garage 2.4.1 проверены пустой и неизвестный размер, границы внутренних частей 5 MiB, диапазоны, отмена и ошибки. Реальный объект 2 GiB + 1 байт прошёл загрузку и скачивание с совпадающим SHA-256 при heap 96 MiB. Повторяющиеся тестовые данные сжимались самим Garage; это проверка корректности и ресурсов, а не универсальный бенчмарк. [Измерения и ограничения](docs/VERIFICATION.md).
+Java 17+, Boot 4.1.2 WebFlux; WebFlux уже входит в зависимость. Добавьте готовый [AttachmentController с проверкой аккаунта](https://github.com/dlorian59/file-streams-spring-boot-starter/blob/main/examples/consumer/src/main/java/com/example/attachments/AttachmentController.java): он проверяет principal и передаёт поток в `ObjectStreamHandler`. [Полная структура файлов и подключение](https://github.com/dlorian59/file-streams-spring-boot-starter#readme). Credentials и аутентификацией управляет приложение. Артефакты starter пока не опубликованы в Central.
 
-Для браузерной загрузки нужен реально работающий транспорт request streams, обычно HTTP/2 с TLS. Проверка конструктора Request не доказывает поддержку прокси или сети. Скрытого накопления файла в Blob нет.
+## Возможности
 
-Для полной демонстрации нужны Docker и OpenSSL. [Демонстрация](docs/0.1.0/ru.md#локальная-демонстрация) работает на loopback без авторизации. Приложение отвечает за доступ, ключи объектов, CORS, настройки S3 и прокси. Отмена при финализации может пересечься с успешным сохранением; потерянный ответ означает неизвестный результат. Локальная отмена подписки или ошибка источника отличаются от завершения HTTP-запроса. Если транспорт передаёт завершение как обычный EOF при неизвестной длине, backend может принять полученный префикс. Поэтому browser abort остаётся неизвестным исходом даже до предполагаемого конца источника. Передавайте `knownLength` / `X-Upload-Length`, когда итоговый размер известен: это обнаруживает короткое тело, но не превращает отмену в гарантию отката. Автоповтора одноразового потока нет. ETag — непрозрачный идентификатор, не контрольная сумма.
+| Задача | Короткий API | Результат и полный пример |
+| --- | --- | --- |
+| Сохранить выбранный файл | `files.uploadFile(key, file)` | Проверенный commit; [исходник](browser/demo/application-files.ts) |
+| Передать сформированный отчёт | `files.upload(key, source)` | Неизвестная длина с ограничением размера; [руководство](docs/0.1.0/integration-ru.md#генерируемые-данные) |
+| Скачать или посмотреть диапазон | `files.download(key, sink, { range })` | Запись с backpressure и проверкой range; [исходник](browser/demo/transfer-example.ts) |
+| Отменить или показать прогресс | `{ signal, onProgress }` | Различает чтение и commit; [руководство](docs/0.1.0/integration-ru.md#результаты) |
+| Использовать Java без Spring | `StreamProfile.ATTACHMENTS.limits()` | Те же core/S3 engines; [Java guide](docs/0.1.0/ru.md) |
+| Добавить готовый React UI | `FileAttachment` | Состояния загрузки/скачивания; [React-интеграция](https://github.com/dlorian59/file-streams-react) |
 
-[MIT](LICENSE) · 2026 Aleksandr Kashevarov.
+Отмена или потерянный ответ могут оставить результат загрузки неизвестным, в том числе до ожидаемого конца HTTP-тела неизвестной длины. Одноразовый поток автоматически не повторяется. Передавайте известный размер всегда, когда он доступен. Для браузерной загрузки нужен проверенный HTTP/2 или HTTP/3/TLS; fallback с полным буфером файла не предусмотрен.
+
+[Integration / Подключение](docs/0.1.0/integration-ru.md) · [Guide / Руководство](docs/0.1.0/ru.md) · [Reference / Справочник](docs/0.1.0/reference-ru.md) · [Versions / Версии](docs/index.md) · [Verification / Проверки](docs/VERIFICATION.md) · [MIT](LICENSE)
 
 </details>

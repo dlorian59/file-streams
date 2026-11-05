@@ -1,4 +1,4 @@
-import { uploadStream, downloadTo, objectUrl, streamCapabilities, TransferError, type ByteRange } from '@59alex/file-streams';
+import { fileProfiles, uploadStream, downloadTo, objectUrl, streamCapabilities, TransferError, type ByteRange } from '@59alex/file-streams';
 
 const objects = 'https://localhost:19443/objects';
 
@@ -7,7 +7,7 @@ const objects = 'https://localhost:19443/objects';
 export async function sendFile(file: File, key: string, signal: AbortSignal) {
   return uploadStream({
     url: objectUrl(objects, key), key, source: file.stream(), knownLength: file.size,
-    maxBytes: 512 * 1024 * 1024, signal,
+    maxBytes: fileProfiles.media.maxBytes, signal,
     onProgress(progress) {
       console.log(progress.phase === 'reading' ? progress.bytesRead : progress.commit.etag);
     },
@@ -17,7 +17,7 @@ export async function sendFile(file: File, key: string, signal: AbortSignal) {
 // EN: The caller provides the destination, such as a file-system writable stream; bytes are written incrementally.
 // RU: Приложение передаёт приёмник, например файловый writable stream; данные записываются постепенно.
 export async function saveFile(key: string, destination: WritableStream<Uint8Array>, signal: AbortSignal) {
-  return downloadTo({ url: objectUrl(objects, key), destination, maxBytes: 512 * 1024 * 1024, signal });
+  return downloadTo({ url: objectUrl(objects, key), destination, maxBytes: fileProfiles.media.maxBytes, signal });
 }
 
 // EN: The probe checks API syntax only; it never sends a request or certifies your proxy path.
@@ -30,14 +30,14 @@ export function inspectSupport() {
 // RU: Закрытый, открытый и суффиксный диапазоны используют тот же приёмник; он должен быть новым и незаблокированным.
 export function saveRange(key: string, range: ByteRange, destination: WritableStream<Uint8Array>, signal: AbortSignal) {
   return downloadTo({ url: objectUrl(objects, key), destination, range,
-    maxBytes: 1024 * 1024, signal, onProgress: progress => console.log(progress.bytesWritten, progress.responseBytes) });
+    maxBytes: fileProfiles.attachments.maxBytes, signal, onProgress: progress => console.log(progress.bytesWritten, progress.responseBytes) });
 }
 
 // EN: Additional headers and credentials are application policy; CORS must allow them on cross-origin requests.
 // RU: Дополнительные заголовки и credentials определяет приложение; при cross-origin их должен разрешать CORS.
 export function sendAuthorizedFile(file: File, key: string, authorization: string, signal: AbortSignal) {
   return uploadStream({ url: objectUrl(objects, key), key, source: file.stream(), knownLength: file.size,
-    maxBytes: 512 * 1024 * 1024, signal, headers: { Authorization: authorization }, credentials: 'include' });
+    maxBytes: fileProfiles.media.maxBytes, signal, headers: { Authorization: authorization }, credentials: 'include' });
 }
 
 // EN: Report the remote outcome separately from the local cause; unknown never means that storage is empty.
@@ -53,5 +53,5 @@ export function describeFailure(error: unknown): string {
 // RU: Не задавайте knownLength только при неизвестном итоге; свой Fetch обязан сохранить streaming и отмену.
 export function sendGenerated(key: string, source: ReadableStream<Uint8Array>, signal: AbortSignal,
   transport: typeof globalThis.fetch = globalThis.fetch) {
-  return uploadStream({ url: objectUrl(objects, key), key, source, maxBytes: 1024 * 1024, signal, fetch: transport });
+  return uploadStream({ url: objectUrl(objects, key), key, source, maxBytes: fileProfiles.attachments.maxBytes, signal, fetch: transport });
 }

@@ -13,3 +13,5 @@ Choose a library version and language. Documentation is plain Markdown and stays
 [Complete reference EN](0.1.0/reference-en.md) · [Полный справочник RU](0.1.0/reference-ru.md)
 
 [← Back to repository README / Назад к README библиотеки](../README.md)
+
+[Existing application EN](0.1.0/integration-en.md) · [Подключение к приложению RU](0.1.0/integration-ru.md)
